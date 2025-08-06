@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShopEase - E-Commerce Landing</title>
+  <style>
+    /* RESET */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+    }
+    button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+    /* VARIABLES FOR LIGHT & DARK MODE */
+    :root {
+      --primary-color: #2874f0;
+      --primary-hover: #0057d9;
+      --highlight-color: #ffe500;
+      --highlight-hover: #fbcc04;
+      --text-color: #333;
+      --bg-color: #f5f5f5;
+      --card-bg: white;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+    body.dark {
+      --primary-color: #1a2a6c;
+      --primary-hover: #0a1b4b;
+      --highlight-color: #e6bf00;
+      --highlight-hover: #b59500;
+      --text-color: #ddd;
+      --bg-color: #121212;
+      --card-bg: #222;
+      --shadow: rgba(255, 255, 255, 0.1);
+    }
+
+    /* SCROLLBAR FOR DARK MODE */
+    body.dark ::-webkit-scrollbar {
+      width: 8px;
+    }
+    body.dark ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+    body.dark ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 4px;
+    }
+
+    /* STICKY HEADER */
+    nav {
+      position: sticky;
+      top: 0;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      height: 60px;
+      color: white;
+      z-index: 1001;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+    .logo {
+      font-weight: 900;
+      font-size: 1.8rem;
+      letter-spacing: 1.5px;
+      margin-right: 24px;
+      user-select: none;
+    }
+    .search-bar {
+      flex-grow: 1;
+      max-width: 600px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px 48px 10px 16px;
+      border-radius: 2px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: var(--text-color);
+    }
+    .search-bar button {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: var(--highlight-color);
+      height: 38px;
+      width: 38px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+      transition: background-color 0.3s ease;
+    }
+    .search-bar button:hover {
+      background: var(--highlight-hover);
+    }
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    .nav-icons svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+      vertical-align: middle;
+    }
+    .nav-icons .icon-text {
+      margin-left: 6px;
+      vertical-align: middle;
+      display: inline-block;
+    }
+    /* Search Suggestions */
+    #suggestions {
+      position: absolute;
+      top: 42px;
+      left: 0;
+      right: 0;
+      max-height: 180px;
+      overflow-y: auto;
+      background: var(--card-bg);
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      z-index: 1002;
+      box-shadow: 0 2px 6px var(--shadow);
+      display: none;
+    }
+    #suggestions li {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #suggestions li:hover,
+    #suggestions li.active {
+      background-color: var(--highlight-color);
+      color: #222;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      background: url('https://images-eu.ssl-images-amazon.com/images/G/31/img21/Wireless/rv/LPA/April/D21779292_IN_WLME_21_WLME_Tall_Hero_1500x600._CB667159124_.jpg') no-repeat center/cover;
+      height: 400px;
+      position: relative;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 40px;
+      max-width: 100%;
+      animation: fadeIn 1s ease forwards;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      max-width: 600px;
+      margin-bottom: 12px;
+      font-weight: 900;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.9);
+    }
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 500px;
+      margin-bottom: 24px;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
+    }
+    .hero button {
+      width: 160px;
+      padding: 12px 20px;
+      background: var(--highlight-color);
+      border: none;
+      color: #222;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    }
+    .hero button:hover {
+      background: var(--highlight-hover);
+    }
+
+    /*CATEGORY CARDS*/
+    .categories {
+      margin: 40px auto;
+      max-width: 1200px;
+      padding: 0 20px;
+      animation: fadeIn 1.3s ease forwards;
+    }
+    .categories h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 24px;
+      color: var(--text-color);
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+      gap: 20px;
+    }
+    .category-card {
+      background: var(--card-bg);
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 3px 8px var(--shadow);
+      padding: 20px;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .category-card:hover,
+    .category-card:focus {
+      transform: translateY(-8px);
+      box-shadow: 0 6px 15px var(--shadow);
+      outline: none;
+    }
+    .category-card img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 12px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+    .category-card:hover img {
+      transform: scale(1.1);
+    }
+    .category-card p {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    /* PRODUCTS SECTION */
+    .products {
+      margin: 40px auto 80px;
+      max-width: 1200px;
+      padding: 0 20px;
+      animation: fadeIn 1.6s ease forwards;
+    }
+    .products h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 24px;
+      color: var(--text-color);
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 24px;
+    }
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 6px;
+      box-shadow: 0 3px 8px var(--shadow);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      transition: box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      outline-offset: 3px;
+    }
+    .product-card:hover,
+    .product-card:focus {
+      box-shadow: 0 6px 20px var(--shadow);
+      outline: none;
+    }
+    .product-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      transition: transform 0.3s ease;
+    }
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+    .product-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--text-color);
+      flex-grow: 1;
+      min-height: 48px;
+    }
+    .product-price {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #b12704;
+      margin-top: auto;
+    }
+
+    /* QUICK VIEW BUTTON */
+    .quick-view-btn {
+      position: absolute;
+      bottom: 55px;
+      right: 10px;
+      background: var(--primary-color);
+      color: white;
+      border:none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .product-card:hover .quick-view-btn,
+    .product-card:focus-within .quick-view-btn {
+      opacity: 1;
+    }
+
+    /* FLOATING CART ICON */
+    #floating-cart {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: var(--primary-color);
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      z-index: 1003;
+      transition: background-color 0.3s ease;
+    }
+    #floating-cart:hover {
+      background: var(--primary-hover);
+    }
+    #cart-count {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--highlight-color);
+      color: #222;
+      font-weight: 800;
+      font-size: 0.75rem;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 20px 15px;
+      font-size: 0.9rem;
+      user-select: none;
+      margin-top: auto;
+    }
+    footer a {
+      color: #ffeca3;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    /* PAYMENT ICONS */
+    .payments {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      align-items: center;
+    }
+    .payments img {
+      width: 40px;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+    .payments img:hover {
+      opacity: 1;
+    }
+
+    /* QUICK VIEW MODAL */
+    #quickViewModal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1005;
+    }
+    #quickViewModal.active {
+      display: flex;
+    }
+    #quickViewModal .modal-content {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 8px;
+      width: 320px;
+      max-width: 90%;
+      color: var(--text-color);
+      box-shadow: 0 5px 20px var(--shadow);
+      text-align: center;
+      position: relative;
+      animation: fadeInScale 0.3s ease forwards;
+    }
+    #quickViewModal img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      object-fit: contain;
+    }
+    #quickViewModal h3 {
+      margin-bottom: 10px;
+      font-size: 1.25rem;
+    }
+    #quickViewModal .price {
+      color: #b12704;
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin-bottom: 20px;
+    }
+    #quickViewModal button.close-btn {
+      position: absolute;
+      top: 8px; right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-color);
+      cursor: pointer;
+      user-select: none;
+    }
+    #quickViewModal button.close-btn:hover {
+      color: var(--primary-color);
+    }
+    #quickViewModal button.add-cart-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    #quickViewModal button.add-cart-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.8);}
+      to { opacity: 1; transform: scale(1);}
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+        max-width: 100%;
+      }
+      .hero {
+        height: 300px;
+        padding-left: 20px;
+      }
+      .search-bar input {
+        font-size: 0.95rem;
+      }
+      nav {
+        justify-content: space-between;
+      }
+      .nav-icons {
+        margin-left: 0;
+      }
+      .category-grid {
+        grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+      }
+      .product-grid {
+        grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+      }
+      #selections,
+      .quick-view-btn {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav role="navigation" aria-label="Primary Navigation">
+    <div class="logo" aria-label="ShopEase logo" tabindex="0">ShopEase</div>
+    <form class="search-bar" role="search" aria-label="Site Search" autocomplete="off">
+      <input id="searchInput" type="search" placeholder="Search for products, brands and more" aria-autocomplete="list" aria-controls="suggestions" aria-expanded="false" aria-haspopup="listbox" />
+      <button type="submit" aria-label="Search Products">🔍</button>
+      <ul id="suggestions" role="listbox"></ul>
+    </form>
+    <div class="nav-icons" aria-label="User account and cart options">
+      <div id="signInBtn" title="Sign In" tabindex="0" role="button" aria-pressed="false" aria-label="Sign In">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zM12 14.4c-3.6 0-10.8 1.8-10.8 5.4v2.4h21.6v-2.4c0-3.6-7.2-5.4-10.8-5.4z"></path></svg>
+        <span class="icon-text">Sign In</span>
+      </div>
+      <div id="cartBtn" title="Cart" tabindex="0" role="button" aria-pressed="false" aria-label="Shopping Cart">
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M7 4h-2l-3 9v2h18v-2l-3-9h-2l-1 3h-8l-1-3zm2 14c-1.1 0-2 .9-2 2s.9 2 2 2c1.1 0 2-.9 2-2s-.9-2-2-2zm8 0c-1.1 0-2 .9-2 2s.9 2 2 2c1.1 0 2-.9 2-2s-.9-2-2-2z"></path></svg>
+        <span class="icon-text">Cart</span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" role="banner" aria-label="Promotional banner">
+    <h1>Discover Amazing Deals</h1>
+    <p>Shop from millions of products and get exclusive discounts.</p>
+    <button id="shopNowBtn" aria-label="Shop Now Button">Shop Now</button>
+  </section>
+
+  <section class="categories" aria-label="Product Categories">
+    <h2>Shop by Categories</h2>
+    <div class="category-grid" role="list" aria-describedby="categoryDesc">
+      <span id="categoryDesc" class="visually-hidden">List of product categories</span>
+      <a href="#" class="category-card" tabindex="0" role="listitem" aria-label="Electronics Category">
+        <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="Icon for Electronics" loading="lazy" />
+        <p>Electronics</p>
+      </a>
+      <a href="#" class="category-card" tabindex="0" role="listitem" aria-label="Fashion Category">
+        <img src="https://cdn-icons-png.flaticon.com/512/892/892458.png" alt="Icon for Fashion" loading="lazy" />
+        <p>Fashion</p>
+      </a>
+      <a href="#" class="category-card" tabindex="0" role="listitem" aria-label="Home & Furniture Category">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Icon for Home and Furniture" loading="lazy" />
+        <p>Home & Furniture</p>
+      </a>
+      <a href="#" class="category-card" tabindex="0" role="listitem" aria-label="Sports & Fitness Category">
+        <img src="https://cdn-icons-png.flaticon.com/512/3634/3634326.png" alt="Icon for Sports and Fitness" loading="lazy" />
+        <p>Sports & Fitness</p>
+      </a>
+      <a href="#" class="category-card" tabindex="0" role="listitem" aria-label="Books Category">
+        <img src="https://cdn-icons-png.flaticon.com/512/3637/3637342.png" alt="Icon for Books" loading="lazy" />
+        <p>Books</p>
+      </a>
+      <a href="#" class="category-card" tabindex="0" role="listitem" aria-label="Toys & Games Category">
+        <img src="https://cdn-icons-png.flaticon.com/512/2965/2965567.png" alt="Icon for Toys and Games" loading="lazy" />
+        <p>Toys & Games</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="products" aria-label="Featured Products">
+    <h2>Featured Products</h2>
+    <div class="product-grid">
+      <div class="product-card" tabindex="0" role="button" aria-pressed="false" aria-label="Wireless Bluetooth Headphones">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/71NIW5ZTtfL._AC_UY550_.jpg" alt="Wireless Bluetooth Headphones" loading="lazy"/>
+        <div class="product-title">Wireless Bluetooth Headphones</div>
+        <div class="product-price">&#8377;1,299</div>
+        <button class="quick-view-btn" aria-label="Quick view for Wireless Bluetooth Headphones">Quick View</button>
+      </div>
+
+      <div class="product-card" tabindex="0" role="button" aria-pressed="false" aria-label="Fitness Smartwatch with Heart Rate Monitor">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/71v18turbvL._AC_UY550_.jpg" alt="Fitness Smartwatch with Heart Rate Monitor" loading="lazy"/>
+        <div class="product-title">Fitness Smartwatch with Heart Rate Monitor</div>
+        <div class="product-price">&#8377;2,499</div>
+        <button class="quick-view-btn" aria-label="Quick view for Fitness Smartwatch">Quick View</button>
+      </div>
+
+      <div class="product-card" tabindex="0" role="button" aria-pressed="false" aria-label="Ergonomic Gaming Mouse">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/61ZBpTzeWqL._AC_UY550_.jpg" alt="Ergonomic Gaming Mouse" loading="lazy" />
+        <div class="product-title">Ergonomic Gaming Mouse</div>
+        <div class="product-price">&#8377;899</div>
+        <button class="quick-view-btn" aria-label="Quick view for Ergonomic Gaming Mouse">Quick View</button>
+      </div>
+
+      <div class="product-card" tabindex="0" role="button" aria-pressed="false" aria-label="Classic Literature Pride and Prejudice">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/81AFocW9ZJL.jpg" alt="Classic Literature Pride and Prejudice" loading="lazy" />
+        <div class="product-title">Classic Literature: “Pride and Prejudice”</div>
+        <div class="product-price">&#8377;199</div>
+        <button class="quick-view-btn" aria-label="Quick view for Classic Literature">Quick View</button>
+      </div>
+
+      <div class="product-card" tabindex="0" role="button" aria-pressed="false" aria-label="Ergonomic Office Chair">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/61dv2Rp-YuL._AC_SL1500_.jpg" alt="Ergonomic Office Chair" loading="lazy" />
+        <div class="product-title">Ergonomic Office Chair</div>
+        <div class="product-price">&#8377;5,499</div>
+        <button class="quick-view-btn" aria-label="Quick view for Office Chair">Quick View</button>
+      </div>
+
+      <div class="product-card" tabindex="0" role="button" aria-pressed="false" aria-label="Professional Size Football">
+        <img src="https://images-na.ssl-images-amazon.com/images/I/81uT+7mOfjL._AC_SL1500_.jpg" alt="Professional Size Football" loading="lazy" />
+        <div class="product-title">Professional Size Football</div>
+        <div class="product-price">&#8377;699</div>
+        <button class="quick-view-btn" aria-label="Quick view for Football">Quick View</button>
+      </div>
+    </div>
+  </section>
+
+  <footer role="contentinfo">
+    &copy; 2025 ShopEase. All rights reserved.
+    <nav aria-label="Footer Navigation" style="margin-top:8px;">
+      <a href="#" tabindex="0">Terms of Service</a> |
+      <a href="#" tabindex="0">Privacy Policy</a> |
+      <a href="#" tabindex="0">Help</a>
+    </nav>
+    <div class="payments" aria-label="Accepted Payment Methods">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="MasterCard" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f5/PayPal.svg" alt="PayPal" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/American_Express_logo_(2006).svg" alt="American Express" />
+    </div>
+  </footer>
+
+  <!-- Floating Cart -->
+  <div id="floating-cart" aria-label="Shopping cart with items" tabindex="0" role="button" aria-pressed="false">
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="32" height="32" fill="white">
+      <path d="M7 4h-2l-3 9v2h18v-2l-3-9h-2l-1 3h-8l-1-3zm2 14c-1.1 0-2 .9-2 2s.9 2 2 2c1.1 0 2-.9 2-2s-.9-2-2-2zm8 0c-1.1 0-2 .9-2 2s.9 2 2 2c1.1 0 2-.9 2-2s-.9-2-2-2z"></path>
+    </svg>
+    <div id="cart-count" aria-live="polite" aria-atomic="true" aria-label="Number of items in cart">0</div>
+  </div>
+
+  <!-- Quick View Modal -->
+  <div id="quickViewModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="modal-content">
+      <button class="close-btn" aria-label="Close quick view">&times;</button>
+      <img id="modalImage" src="" alt="" />
+      <h3 id="modalTitle"></h3>
+      <p class="price" id="modalPrice"></p>
+      <button class="add-cart-btn" id="addToCartBtn">Add to Cart</button>
+    </div>
+  </div>
+
+<script>
+  // JavaScript for extra features
+
+  // PRODUCT DATA FOR QUICK VIEW
+  const products = [
+    {
+      title: "Wireless Bluetooth Headphones",
+      price: "₹1,299",
+      priceNumber: 1299,
+      img: "https://images-na.ssl-images-amazon.com/images/I/71NIW5ZTtfL._AC_UY550_.jpg",
+      alt: "Wireless Bluetooth Headphones"
+    },
+    {
+      title: "Fitness Smartwatch with Heart Rate Monitor",
+      price: "₹2,499",
+      priceNumber: 2499,
+      img: "https://images-na.ssl-images-amazon.com/images/I/71v18turbvL._AC_UY550_.jpg",
+      alt: "Fitness Smartwatch with Heart Rate Monitor"
+    },
+    {
+      title: "Ergonomic Gaming Mouse",
+      price: "₹899",
+      priceNumber: 899,
+      img: "https://images-na.ssl-images-amazon.com/images/I/61ZBpTzeWqL._AC_UY550_.jpg",
+      alt: "Ergonomic Gaming Mouse"
+    },
+    {
+      title: "Classic Literature: “Pride and Prejudice”",
+      price: "₹199",
+      priceNumber: 199,
+      img: "https://images-na.ssl-images-amazon.com/images/I/81AFocW9ZJL.jpg",
+      alt: "Classic Literature Pride and Prejudice"
+    },
+    {
+      title: "Ergonomic Office Chair",
+      price: "₹5,499",
+      priceNumber: 5499,
+      img: "https://images-na.ssl-images-amazon.com/images/I/61dv2Rp-YuL._AC_SL1500_.jpg",
+      alt: "Ergonomic Office Chair"
+    },
+    {
+      title: "Professional Size Football",
+      price: "₹699",
+      priceNumber: 699,
+      img: "https://images-na.ssl-images-amazon.com/images/I/81uT+7mOfjL._AC_SL1500_.jpg",
+      alt: "Professional Size Football"
+    },
+  ];
+
+  // Elements references
+  const searchInput = document.getElementById('searchInput');
+  const suggestionsList = document.getElementById('suggestions');
+  const floatingCart = document.getElementById('floating-cart');
+  const cartCount = document.getElementById('cart-count');
+  const quickViewModal = document.getElementById('quickViewModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalImage = document.getElementById('modalImage');
+  const addToCartBtn = document.getElementById('addToCartBtn');
+  const closeModalBtn = quickViewModal.querySelector('.close-btn');
+  const darkModeToggleBtn = document.createElement('button');
+
+  let cartItems = [];
+  let currentQuickViewIndex = null;
+
+  // Search suggestions data - combining products & categories for demo
+  const categories = [
+    'Electronics',
+    'Fashion',
+    'Home & Furniture',
+    'Sports & Fitness',
+    'Books',
+    'Toys & Games'
+  ];
+
+  const searchTerms = [...categories, ...products.map(p => p.title)];
+
+  // Show/hide suggestions when typing
+  searchInput.addEventListener('input', onSearchInput);
+
+  function onSearchInput() {
+    const query = searchInput.value.trim().toLowerCase();
+    if (!query) {
+      suggestionsList.innerHTML = '';
+      suggestionsList.style.display = 'none';
+      searchInput.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    // filter matching suggestions
+    const filtered = searchTerms.filter(term => term.toLowerCase().includes(query)).slice(0, 5);
+
+    if (filtered.length === 0) {
+      suggestionsList.innerHTML = '';
+      suggestionsList.style.display = 'none';
+      searchInput.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    // build suggestion list
+    suggestionsList.innerHTML = filtered.map(term =>
+      `<li role="option" tabindex="0">${term}</li>`
+    ).join('');
+    suggestionsList.style.display = 'block';
+    searchInput.setAttribute('aria-expanded', 'true');
+
+    // Suggestion keyboard & click support
+    const items = suggestionsList.querySelectorAll('li');
+    items.forEach((item, idx) => {
+      item.addEventListener('click', () => {
+        searchInput.value = item.textContent;
+        suggestionsList.innerHTML = '';
+        suggestionsList.style.display = 'none';
+        searchInput.setAttribute('aria-expanded', 'false');
+      });
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          searchInput.value = item.textContent;
+          suggestionsList.innerHTML = '';
+          suggestionsList.style.display = 'none';
+          searchInput.setAttribute('aria-expanded', 'false');
+          searchInput.focus();
+        }
+      });
+    });
+  }
+
+  // Hide suggestions if clicking outside
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+      suggestionsList.style.display = 'none';
+      searchInput.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Search submit action simulation
+  document.querySelector('.search-bar').addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert(`Searching for "${searchInput.value.trim()}" (demo)`);
+    searchInput.value = '';
+    suggestionsList.innerHTML = '';
+    suggestionsList.style.display = 'none';
+    searchInput.setAttribute('aria-expanded', 'false');
+  });
+
+  // Quick View Modal logic
+  document.querySelectorAll('.product-card').forEach((card, idx) => {
+    const quickBtn = card.querySelector('.quick-view-btn');
+    quickBtn.addEventListener('click', () => openQuickView(idx));
+  });
+
+  function openQuickView(idx) {
+    currentQuickViewIndex = idx;
+    const product = products[idx];
+    modalTitle.textContent = product.title;
+    modalPrice.textContent = product.price;
+    modalImage.src = product.img;
+    modalImage.alt = product.alt;
+    quickViewModal.classList.add('active');
+    addToCartBtn.focus();
+  }
+  closeModalBtn.addEventListener('click', closeQuickView);
+  quickViewModal.addEventListener('click', e => {
+    if (e.target === quickViewModal) closeQuickView();
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key === "Escape" && quickViewModal.classList.contains('active')) {
+      closeQuickView();
+    }
+  });
+  function closeQuickView() {
+    quickViewModal.classList.remove('active');
+  }
+
+  // Add to Cart logic
+  addToCartBtn.addEventListener('click', () => {
+    if (currentQuickViewIndex === null) return;
+    const product = products[currentQuickViewIndex];
+    cartItems.push(product);
+    updateCartCount();
+    alert(`Added "${product.title}" to cart!`);
+  });
+
+  // Update cart count in floating icon
+  function updateCartCount() {
+    cartCount.textContent = cartItems.length;
+    floatingCart.setAttribute('aria-label', `${cartItems.length} item${cartItems.length === 1 ? '' : 's'} in cart`);
+  }
+
+  // Floating cart click handler
+  floatingCart.addEventListener('click', () => {
+    if (cartItems.length === 0) {
+      alert('Cart is empty.');
+    } else {
+      alert(`You have ${cartItems.length} item${cartItems.length === 1 ? '' : 's'} in your cart.`);
+    }
+  });
+  floatingCart.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      floatingCart.click();
+    }
+  });
+
+  // Dark mode toggle button
+  darkModeToggleBtn.setAttribute('aria-label', 'Toggle dark mode');
+  darkModeToggleBtn.setAttribute('role', 'button');
+  darkModeToggleBtn.setAttribute('tabindex', '0');
+  darkModeToggleBtn.textContent = '🌙';
+  darkModeToggleBtn.title = 'Toggle Dark Mode';
+  darkModeToggleBtn.style.cssText = `
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    z-index: 1004;
+    user-select: none;
+    box-shadow: 0 3px 10px var(--shadow);
+  `;
+  document.body.appendChild(darkModeToggleBtn);
+
+  darkModeToggleBtn.addEventListener('click', toggleDarkMode);
+  darkModeToggleBtn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleDarkMode();
+    }
+  });
+
+  // Load saved mode preference
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark');
+    darkModeToggleBtn.textContent = '☀️';
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    if (document.body.classList.contains('dark')) {
+      darkModeToggleBtn.textContent = '☀️';
+      localStorage.setItem('darkMode', 'true');
+    } else {
+      darkModeToggleBtn.textContent = '🌙';
+      localStorage.setItem('darkMode', 'false');
+    }
+  }
+
+</script>
+
+<!-- Visually hidden class for accessibility -->
+<style>
+  .visually-hidden {
+    position: absolute !important;
+    height: 1px; width: 1px; 
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip-path: inset(50%);
+    white-space: nowrap; 
+  }
+</style>
+
+</body>
+</html>
